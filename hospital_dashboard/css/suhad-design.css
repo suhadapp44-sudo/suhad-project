@@ -1,0 +1,628 @@
+/* Suhad App UI Design - Authentic Styles from References 1-11 */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Cairo:wght@300;400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', 'Roboto', sans-serif;
+    /* Prioritize Cairo for Arabic */
+}
+
+body {
+    background-color: #f8fafc;
+    /* display: flex; REMOVED to allow full page layouts */
+    /* justify-content: center; REMOVED */
+    /* align-items: center; REMOVED */
+    min-height: 100vh;
+}
+
+/* Authentic Poster Container from 5.html */
+.poster-container {
+    width: 100%;
+    max-width: 100%;
+    /* Adapted for desktop dashboard */
+    min-height: 100vh;
+    background: #f8fafc;
+    /* border-radius: 24px; Removed for full screen feel on desktop, add back if boxed desired */
+    overflow-x: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: 0 auto;
+}
+
+/* Background Decorations */
+.bg-decoration {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(66, 133, 244, 0.1) 0%, rgba(15, 157, 88, 0.1) 100%);
+    top: -200px;
+    right: -200px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.bg-decoration-2 {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(244, 180, 0, 0.1) 0%, rgba(66, 133, 244, 0.1) 100%);
+    bottom: -150px;
+    left: -150px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.content {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.patient-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.patient-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: #4285f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3);
+}
+
+.patient-details h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.patient-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f9d58;
+    /* Default Stable Green */
+}
+
+.patient-status.critical {
+    color: #f44336;
+}
+
+.patient-status.warning {
+    color: #f4b400;
+}
+
+.patient-status .material-icons {
+    font-size: 20px;
+}
+
+.emergency-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+    transition: all 0.3s ease;
+}
+
+.emergency-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(244, 67, 54, 0.4);
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #666;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+/* AI Message Card - Exact Match 5.html */
+.ai-message-card {
+    background-color: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ai-message {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.ai-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(15, 157, 88, 0.15);
+    color: #0f9d58;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.ai-icon .material-icons {
+    font-size: 28px;
+}
+
+.ai-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    line-height: 1.4;
+}
+
+.view-details-btn {
+    padding: 10px 20px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Vitals Section */
+.vitals-section {
+    margin-bottom: 25px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title .material-icons {
+    color: #4285f4;
+}
+
+.vitals-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+/* Mobile responsive for vitals */
+@media (max-width: 600px) {
+    .vitals-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-message-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .view-details-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .poster-container {
+        border-radius: 0;
+        width: 100%;
+        box-shadow: none;
+    }
+}
+
+.vital-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    /* Bit more padding than 5.html for comfort */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.vital-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vital-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.vital-icon.hr {
+    background-color: rgba(244, 67, 54, 0.15);
+    color: #f44336;
+}
+
+.vital-icon.bp {
+    background-color: rgba(66, 133, 244, 0.15);
+    color: #4285f4;
+}
+
+.vital-icon.spo2 {
+    background-color: rgba(15, 157, 88, 0.15);
+    color: #0f9d58;
+}
+
+.vital-icon.temp {
+    background-color: rgba(244, 180, 0, 0.15);
+    color: #f4b400;
+}
+
+.vital-icon .material-icons {
+    font-size: 26px;
+}
+
+.vital-info {
+    flex-grow: 1;
+}
+
+.vital-name {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.vital-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+}
+
+.vital-time {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+}
+
+/* Quick Actions Grid (from 5.html) */
+.quick-actions {
+    margin-bottom: 25px;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.action-btn {
+    background-color: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    width: 100%;
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.action-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-icon.message {
+    background-color: rgba(66, 133, 244, 0.15);
+    color: #4285f4;
+}
+
+/* Blue */
+.action-icon.lab {
+    background-color: rgba(15, 157, 88, 0.15);
+    color: #0f9d58;
+}
+
+/* Green */
+.action-icon.meds {
+    background-color: rgba(244, 180, 0, 0.15);
+    color: #f4b400;
+}
+
+/* Yellow */
+.action-icon.procedures {
+    background-color: rgba(156, 39, 176, 0.15);
+    color: #9c27b0;
+}
+
+/* Purple */
+
+.action-icon .material-icons {
+    font-size: 24px;
+}
+
+.action-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Medical Records (Timeline style adapted to card style) */
+.medical-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 15px;
+}
+
+.medical-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.medical-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.medical-list-item {
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border-right: 3px solid #ddd;
+    /* RTL support */
+}
+
+/* Dashboard Table Styles (Admin View) */
+.dashboard-table-container {
+    background-color: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+}
+
+.suhad-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.suhad-table th {
+    text-align: right;
+    padding: 15px;
+    color: #444;
+    /* Darker than #666 */
+    font-weight: 700;
+    border-bottom: 2px solid #e0e0e0;
+    /* Slightly darker border */
+}
+
+.suhad-table td {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #222;
+    /* Almost black for best readability */
+    font-weight: 500;
+}
+
+.suhad-table tr:hover {
+    background-color: #f1f5f9;
+    /* Slightly darker than #f9fbff for better visibility */
+}
+
+.add-patient-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    /* LTR */
+    left: 30px;
+    /* RTL */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #4285f4;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 16px rgba(66, 133, 244, 0.4);
+    cursor: pointer;
+    border: none;
+    z-index: 100;
+    transition: transform 0.3s;
+}
+
+.add-patient-fab:hover {
+    transform: scale(1.1);
+}
+
+/* RTL Specific Overrides for Arabic */
+/* Responsive Design Improvements */
+
+/* Tablet & Desktop Layouts */
+@media (min-width: 768px) {
+
+    .vitals-grid,
+    .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .vitals-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .actions-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Mobile Layouts (< 768px) */
+@media (max-width: 768px) {
+    .content {
+        padding: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .user-section {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .stats-grid-dashboard {
+        grid-template-columns: 1fr;
+        /* Force single column on mobile */
+    }
+
+    .vitals-grid,
+    .actions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .poster-container {
+        border-radius: 0;
+        min-height: auto;
+        /* Allow height to fit content */
+        height: auto;
+    }
+
+    .ai-message-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .ai-message {
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+
+    /* Hide less important table columns on mobile */
+    .suhad-table th:nth-child(3),
+    .suhad-table td:nth-child(3),
+    /* Room */
+    .suhad-table th:nth-child(5),
+    .suhad-table td:nth-child(5),
+    /* HR */
+    .suhad-table th:nth-child(6),
+    .suhad-table td:nth-child(6),
+    /* BP */
+    .suhad-table th:nth-child(7),
+    .suhad-table td:nth-child(7)
+
+    /* Oxygen */
+        {
+        display: none;
+    }
+
+    /* Adjust Floating Button Position */
+    .add-patient-fab {
+        left: 20px;
+        bottom: 20px;
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* Small Mobile (< 480px) */
+@media (max-width: 480px) {
+    .logo-section h1 {
+        font-size: 20px !important;
+    }
+
+    .stat-card-dashboard {
+        padding: 15px;
+    }
+
+    .stat-icon-dashboard {
+        width: 45px;
+        height: 45px;
+    }
+
+    .stat-content .value {
+        font-size: 24px;
+    }
+}

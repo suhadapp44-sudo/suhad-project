@@ -1,0 +1,37 @@
+/* Restoration of RTL support and final tweaks */
+
+html[dir="rtl"] .bg-decoration {
+    left: -200px;
+    right: auto;
+}
+
+html[dir="rtl"] .bg-decoration-2 {
+    right: -150px;
+    left: auto;
+}
+
+html[dir="rtl"] .medical-list-item {
+    border-right: 3px solid #ddd;
+    border-left: none;
+}
+
+html[dir="rtl"] .suhad-table th {
+    text-align: right;
+}
+
+html[dir="rtl"] .action-btn {
+    text-align: center;
+}
+
+/* Ensure table container scrolls on mobile */
+@media (max-width: 768px) {
+    .dashboard-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .suhad-table {
+        min-width: 600px;
+        /* Ensure table doesn't squish too much, forcing scroll */
+    }
+}

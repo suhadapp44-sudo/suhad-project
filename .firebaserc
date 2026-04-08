@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "suhad-80c82"
+  },
+  "targets": {
+    "suhad-80c82": {
+      "hosting": {
+        "suhad-sa": [
+          "suhad-80c82"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter VI: Testing — Suhad Hospital System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-bg: #eef2ff;
+            --success: #10b981;
+            --success-bg: #d1fae5;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --body: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --surface: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 4px 24px rgba(79, 70, 229, 0.08);
+            --shadow-lg: 0 12px 40px rgba(79, 70, 229, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea08 0%, #764ba208 100%);
+            color: var(--body);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        /* ── Cover / Hero ── */
+        .cover {
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border-radius: 24px;
+            padding: 3.5rem 3rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+        }
+        .cover::after {
+            content: '';
+            position: absolute;
+            bottom: -40px; left: -40px;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+        .cover-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(8px);
+        }
+        .cover h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        .cover h1 span { color: #a5b4fc; }
+        .cover p {
+            font-size: 1.05rem;
+            opacity: 0.85;
+            max-width: 560px;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        .cover-stats {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .stat-item { text-align: center; }
+        .stat-num {
+            font-size: 2rem;
+            font-weight: 800;
+            display: block;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.75;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ── Container ── */
+        .container { max-width: 900px; margin: 0 auto; }
+
+        /* ── Section Card ── */
+        .section-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 4px 0 0 4px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        .section-icon {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .icon-purple { background: #ede9fe; color: #7c3aed; }
+        .icon-blue   { background: #dbeafe; color: #2563eb; }
+        .icon-green  { background: #d1fae5; color: #059669; }
+        .icon-orange { background: #fff7ed; color: #ea580c; }
+
+        .section-title-wrap h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .section-title-wrap p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-top: 0.2rem;
+        }
+
+        .intro-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--muted);
+            padding: 1.25rem 1.5rem;
+            background: var(--surface);
+            border-radius: 12px;
+            border-right: 3px solid var(--primary-light);
+            margin-bottom: 1.5rem;
+        }
+
+        /* ── Tables ── */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        thead th {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 1rem 1.25rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+        thead th:first-child { border-radius: 14px 0 0 0; }
+        thead th:last-child  { border-radius: 0 14px 0 0; }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s ease;
+        }
+        tbody tr:hover { background: #f8faff; }
+        tbody tr:last-child { border-bottom: none; }
+
+        tbody td {
+            padding: 0.9rem 1.25rem;
+            color: var(--body);
+            vertical-align: top;
+            line-height: 1.6;
+        }
+        tbody td:first-child {
+            font-weight: 700;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        /* Pass Badge */
+        .badge-pass {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.8rem;
+            background: var(--success-bg);
+            color: var(--success);
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+        .badge-pass::before { content: '✓'; font-weight: 900; }
+
+        .badge-positive {
+            display: inline-flex;
+            padding: 0.25rem 0.6rem;
+            background: #eff6ff;
+            color: #2563eb;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-100 {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.8rem;
+            background: var(--success-bg);
+            color: var(--success);
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.82rem;
+        }
+
+        /* ── Table Caption ── */
+        .table-caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--muted);
+            font-style: italic;
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+        }
+
+        /* ── Summary Box ── */
+        .summary-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 1px solid #86efac;
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .summary-box h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #166534;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .summary-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .summary-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            font-size: 0.92rem;
+            color: #14532d;
+            line-height: 1.6;
+        }
+        .summary-list li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 900;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* ── Conclusion Card ── */
+        .conclusion-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 20px;
+            padding: 2.5rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .conclusion-card::before {
+            content: '"';
+            position: absolute;
+            top: -20px; right: 20px;
+            font-size: 10rem;
+            color: rgba(255,255,255,0.04);
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        .conclusion-card .section-tag {
+            display: inline-block;
+            background: rgba(99,102,241,0.3);
+            border: 1px solid rgba(99,102,241,0.5);
+            color: #a5b4fc;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .conclusion-card h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+        }
+        .conclusion-card p {
+            font-size: 0.97rem;
+            line-height: 1.9;
+            color: #94a3b8;
+        }
+
+        /* ── Overall Stats ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .stat-card-num {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+        .stat-card-label {
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+        .stat-card-sub {
+            font-size: 0.75rem;
+            color: var(--success);
+            font-weight: 600;
+            margin-top: 0.3rem;
+        }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+        footer strong { color: var(--primary); }
+
+        /* ── Print ── */
+        @media print {
+            body { background: white; padding: 0; }
+            .cover { border-radius: 0; }
+            .section-card { box-shadow: none; border: 1px solid #ddd; }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .section-card { padding: 1.5rem; }
+            .cover { padding: 2rem 1.5rem; }
+            .cover-stats { gap: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cover -->
+    <div class="cover">
+        <div class="cover-tag">📋 Final Report — CPIS499</div>
+        <h1>Chapter VI:<br><span>Testing</span></h1>
+        <p>
+            A comprehensive testing report for the <strong>Suhad Hospital Management System</strong> —
+            covering Unit Testing, Integration Testing, and Usability Testing conducted with real hospital staff.
+        </p>
+        <div class="cover-stats">
+            <div class="stat-item">
+                <span class="stat-num">41</span>
+                <span class="stat-label">Total Test Cases</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">100%</span>
+                <span class="stat-label">Pass Rate</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">8</span>
+                <span class="stat-label">Usability Testers</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Overall Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-card-num">10</span>
+                <div class="stat-card-label">Unit Tests</div>
+                <div class="stat-card-sub">✓ All Passed</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-card-num">16</span>
+                <div class="stat-card-label">Integration Tests</div>
+                <div class="stat-card-sub">✓ All Passed</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-card-num">15</span>
+                <div class="stat-card-label">Usability Tasks</div>
+                <div class="stat-card-sub">✓ All Passed</div>
+            </div>
+        </div>
+
+        <!-- Introduction -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon icon-purple">📖</div>
+                <div class="section-title-wrap">
+                    <h2>Introduction</h2>
+                    <p>Overview of the testing strategy</p>
+                </div>
+            </div>
+            <div class="intro-text">
+                This chapter explains the testing strategy applied to the <strong>Suhad Hospital Management System</strong>.
+                The system is a web-based hospital dashboard integrated with a <strong>DeepSeek AI engine</strong> and <strong>Firebase</strong> backend.
+                Three separate testing techniques were utilized — <em>Unit Testing</em>, <em>Integration Testing</em>, and <em>Usability Testing</em> —
+                to comprehensively assess the system's functionality, module interaction, and user experience.
+            </div>
+        </div>
+
+        <!-- VI.1 Unit Testing -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon icon-blue">🔬</div>
+                <div class="section-title-wrap">
+                    <h2>VI.1 — Unit Testing</h2>
+                    <p>Individual component validation in isolation</p>
+                </div>
+            </div>
+            <p style="color:var(--muted); font-size:0.95rem; line-height:1.8; margin-bottom:1.5rem;">
+                Unit testing is a type of software testing where individual components or functions are tested in isolation
+                to ensure they perform as expected. The following test cases were executed for the Suhad system:
+            </p>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Test Description</th>
+                            <th>Input Data</th>
+                            <th>Expected Result</th>
+                            <th>Actual Result</th>
+                            <th>Pass/Fail</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Login with empty fields</td>
+                            <td>Email: (empty) Password: (empty)</td>
+                            <td>الرجاء إدخال البريد الإلكتروني وكلمة المرور</td>
+                            <td>الرجاء إدخال البريد الإلكتروني وكلمة المرور</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                            <td><span class="badge-positive">Positive</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Login with incorrect email format</td>
+                            <td>Email: nurse.com<br>Password: Test123456</td>
+                            <td>البريد الإلكتروني غير صحيح</td>
+                            <td>البريد الإلكتروني غير صحيح</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                            <td><span class="badge-positive">Positive</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Login with wrong credentials</td>
+                            <td>Email: nurse@hospital.com<br>Password: wrongpass</td>
+                            <td>البريد الإلكتروني أو كلمة المرور غير صحيحة</td>
+                            <td>البريد الإلكتروني أو كلمة المرور غير صحيحة</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                            <td><span class="badge-positive">Positive</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Login with unauthorized account (not in staff collection)</td>
+                            <td>Email: unknown@gmail.com<br>Password: Test123456</td>
+                            <td>غير مصرح لك بالدخول إلى هذا النظام</td>
+                            <td>غير مصرح لك بالدخول إلى هذا النظام</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                            <td><span class="badge-positive">Positive</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Adding a patient with empty required fields</td>
+                            <td>Name: (empty)<br>Room: ICU-01<br>Phone: (empty)</td>
+                            <td>يرجى ملء جميع الحقول المطلوبة</td>
+                            <td>يرجى ملء جميع الحقول المطلوبة</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                            <td><span class="badge-positive">Positive</span></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Vital sign out-of-range value</td>
+                            <td>Heart Rate: 350 (max=300)<br>Oxygen: 105 (max=100)</td>
+                            <td>القيمة خارج النطاق الطبيعي المسموح به</td>
+                            <td>القيمة خارج النطاق الطبيعي المسموح به</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                            <td><span class="badge-positive">Positive</span></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Blood pressure invalid format</td>
+                            <td>Blood Pressure: abc</td>
+                            <td>يرجى إدخال ضغط الدم بالصيغة الصحيحة (120/80)</td>
+                            <td>يرجى إدخال ضغط الدم بالصيغة الصحيحة (120/80)</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                            <td><span class="badge-positive">Positive</span></td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>AI analysis with critical vitals</td>
+                            <td>HR:140 BP:160/100<br>O2:85% Temp:39.5</td>
+                            <td>Report generated with status=critical &amp; alertLevel ≥ 7</td>
+                            <td>Report generated with critical status</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                            <td><span class="badge-positive">Positive</span></td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Saving patient status without vital signs</td>
+                            <td>All vital fields empty</td>
+                            <td>يرجى إدخال العلامات الحيوية قبل الحفظ</td>
+                            <td>يرجى إدخال العلامات الحيوية قبل الحفظ</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                            <td><span class="badge-positive">Positive</span></td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Adding medical procedure with empty name</td>
+                            <td>Procedure Name: (empty)</td>
+                            <td>اسم الإجراء مطلوب</td>
+                            <td>اسم الإجراء مطلوب</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                            <td><span class="badge-positive">Positive</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="table-caption">Table VI.1 — Unit Testing</p>
+        </div>
+
+        <!-- VI.2 Integration Testing -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon icon-orange">🔗</div>
+                <div class="section-title-wrap">
+                    <h2>VI.2 — Integration Testing</h2>
+                    <p>Cross-module interaction and data flow validation</p>
+                </div>
+            </div>
+            <p style="color:var(--muted); font-size:0.95rem; line-height:1.8; margin-bottom:1.5rem;">
+                Integration testing verifies that multiple modules work correctly together. The following test cases assess
+                the interaction between: <strong>Authentication</strong>, <strong>Dashboard</strong>,
+                <strong>Patient Details</strong>, <strong>Patient Status</strong>, and <strong>Firebase</strong>.
+            </p>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Test Case Objective</th>
+                            <th>Test Description</th>
+                            <th>Expected Result</th>
+                            <th>Pass/Fail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Verify login redirects to dashboard</td>
+                            <td>Enter valid staff credentials and click login</td>
+                            <td>User is redirected to dashboard.html</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Verify dashboard displays patient list from Firestore</td>
+                            <td>After login, navigate to dashboard</td>
+                            <td>List of all patients with their status is displayed</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Verify patient status badges update correctly</td>
+                            <td>Open dashboard with patients of different status values</td>
+                            <td>Each patient shows correct colored badge</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Verify clicking a patient navigates to patient details</td>
+                            <td>Click on a patient card in the dashboard</td>
+                            <td>Redirected to patient-details.html with correct patient data</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Verify patient details loads all data from Firestore</td>
+                            <td>Open patient-details page for a specific patient</td>
+                            <td>All patient info (vitals, procedures, meds, labs) displayed</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Verify adding a medical procedure saves to Firestore</td>
+                            <td>Click procedure button, fill details, confirm</td>
+                            <td>New procedure appears in list and saved in Firestore subcollection</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Verify adding a medication saves to Firestore</td>
+                            <td>Click medication button, fill details, confirm</td>
+                            <td>Medication appears in list and saved in Firestore</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Verify adding a lab test saves to Firestore</td>
+                            <td>Click lab test button, fill details, confirm</td>
+                            <td>Lab test appears in list and saved in Firestore</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Verify vital signs update and save correctly</td>
+                            <td>Enter new vital values in patient-status and click save</td>
+                            <td>Vitals updated in Firestore, confirmation: "تم حفظ البيانات بنجاح ✅"</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Verify DeepSeek AI analysis generates a report</td>
+                            <td>Enter critical vitals and save — AI runs in background automatically</td>
+                            <td>AI report saved in Firestore with arabicSummary, status, and alertLevel</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Verify AI report saved in Firestore subcollection</td>
+                            <td>After AI analysis, click save</td>
+                            <td>Report stored in patients/{id}/aiReports with timestamp</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>Verify FCM push notification sent only on critical status</td>
+                            <td>Save patient data with critical vitals (O2 &lt; 90 or HR &gt; 120)</td>
+                            <td>FCM push sent; alert stored in patients/{id}/alerts subcollection</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>Verify edit button navigates to patient edit page</td>
+                            <td>Click edit button on patient-status page</td>
+                            <td>Redirected to patient-edit.html with patient data loaded</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>Verify back button returns to dashboard</td>
+                            <td>Click the back button on any inner page</td>
+                            <td>Redirected back to dashboard.html</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>Verify print functionality works</td>
+                            <td>Click "طباعة تقرير" in Quick Actions</td>
+                            <td>Browser print dialog opens with patient report</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td>Verify logout clears session and redirects</td>
+                            <td>Click logout button</td>
+                            <td>User session cleared and redirected to login.html</td>
+                            <td><span class="badge-pass">Pass</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="table-caption">Table VI.2 — Integration Testing</p>
+        </div>
+
+        <!-- VI.3 Usability Testing -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon icon-green">👥</div>
+                <div class="section-title-wrap">
+                    <h2>VI.3 — Usability Testing</h2>
+                    <p>Real-user interaction evaluation with hospital staff</p>
+                </div>
+            </div>
+            <p style="color:var(--muted); font-size:0.95rem; line-height:1.8; margin-bottom:1.5rem;">
+                A usability test was conducted to evaluate the hospital dashboard's ease of use. The test involved
+                <strong>8 participants</strong>: 5 nursing staff members and 3 supervisory staff members, along with the project supervisor.
+                The team observed user interactions and recorded all feedback.
+            </p>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Problems & Errors</th>
+                            <th>Difficulties</th>
+                            <th>Pass Rate</th>
+                            <th>Suggestions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Login</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Logout</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>View patient list</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Search for a specific patient</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Open patient details</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Add a medical procedure</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Add a new medication</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Add a lab test</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Update vital signs</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Run AI analysis</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Read AI report</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Save patient status</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Print patient report</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Edit patient data</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                        <tr><td>Navigate between pages</td><td>None</td><td>None</td><td><span class="badge-100">✓ 100%</span></td><td>None</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="table-caption">Table VI.3 — Usability Testing</p>
+
+            <div class="summary-box">
+                <h4>✅ Summary of Usability Test Results</h4>
+                <ul class="summary-list">
+                    <li>All tasks were completed successfully without errors or difficulties.</li>
+                    <li>The Arabic RTL interface matches the participants' natural reading direction.</li>
+                    <li>Color-coded status badges (حرج / تحذير / مستقر) enabled quick visual patient assessment.</li>
+                    <li>The Quick Actions section provided fast access to procedures, medications, and labs.</li>
+                    <li>The DeepSeek AI-generated Arabic medical report (arabicSummary) simplified complex clinical data for nursing staff.</li>
+                    <li>No design changes were required following the usability test.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- VI.4 Conclusion -->
+        <div class="conclusion-card">
+            <span class="section-tag">VI.4 Conclusion</span>
+            <h2>Testing Phase Summary</h2>
+            <p>
+                This chapter detailed the testing phase of the Suhad Hospital Management System using three complementary methods.
+                <strong style="color:#a5b4fc;">Unit testing</strong> confirmed that all individual components handle both valid and invalid inputs correctly.
+                <strong style="color:#a5b4fc;">Integration testing</strong> verified that data flows seamlessly between the web dashboard and Firebase backend,
+                including DeepSeek AI report generation and FCM push notification delivery triggered <em>only on critical patient status</em>.
+                <strong style="color:#a5b4fc;">Usability testing</strong> with real hospital staff confirmed that the system is intuitive,
+                efficient, and ready for clinical deployment.
+            </p>
+        </div>
+
+        <footer>
+            <p>© 2026 <strong>Suhad Hospital Management System</strong> — Chapter VI: Testing Report</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

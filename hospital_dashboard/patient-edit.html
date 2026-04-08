@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحديث بيانات المريض - Suhad Hospital</title>
+    <link rel="stylesheet" href="css/patient-edit.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="poster-container">
+        <!-- Decoration Circles -->
+        <div class="bg-decoration"></div>
+        <div class="bg-decoration-2"></div>
+
+        <div class="content">
+            <div class="header">
+                <button class="back-btn" onclick="window.history.back()">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    <span>العودة</span>
+                </button>
+                <div class="header-actions">
+                    <h1 class="page-title">تحديث بيانات المريض</h1>
+                    <button class="view-status-btn" id="viewStatusBtn" style="display: none;">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M2 12h3l3-9 4 18 3-9h7" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span>عرض الحالة</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-grid" style="grid-template-columns: 1fr;">
+                <!-- Patient Form -->
+                <div class="main-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2" />
+                                <path d="M4 20C4 20 6 16 12 16C18 16 20 20 20 20" stroke="currentColor"
+                                    stroke-width="2" />
+                            </svg>
+                            <h2>معلومات المريض الأساسية</h2>
+                        </div>
+
+                        <form id="patientForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="patientId">رقم المريض</label>
+                                    <input type="text" id="patientId" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="patientName">اسم المريض <span class="required">*</span></label>
+                                    <input type="text" id="patientName" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="age">العمر <span class="required">*</span></label>
+                                    <input type="number" id="age" min="0" max="120" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="unit">القسم / الوحدة <span class="required">*</span></label>
+                                    <select id="unit" required>
+                                        <option value="" disabled selected>اختر القسم...</option>
+                                        <option value="General ICU">العناية المركزة العامة</option>
+                                        <option value="Cardiac ICU">عناية القلب (CCU)</option>
+                                        <option value="Surgical ICU">العناية الجراحية</option>
+                                        <option value="Medical ICU">العناية الباطنية</option>
+                                        <option value="Pediatric ICU">عناية الأطفال (PICU)</option>
+                                        <option value="Neonatal ICU">عناية حديثي الولادة (NICU)</option>
+                                        <option value="Trauma ICU">عناية الحوادث والإصابات</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="room">رقم الغرفة <span class="required">*</span></label>
+                                    <input type="text" id="room" placeholder="مثال: 04" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="gender">الجنس <span class="required">*</span></label>
+                                    <select id="gender" required>
+                                        <option value="" disabled selected>اختر الجنس...</option>
+                                        <option value="Male">ذكر (Male)</option>
+                                        <option value="Female">أنثى (Female)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="admissionDate">تاريخ الدخول <span class="required">*</span></label>
+                                    <input type="datetime-local" id="admissionDate" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="familyPhone">هاتف العائلة <span class="required">*</span></label>
+                                    <input type="tel" id="familyPhone" placeholder="+966XXXXXXXXX" required>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="diagnosis">التشخيص</label>
+                                    <textarea id="diagnosis" rows="3" placeholder="وصف الحالة الطبية..."></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <button type="submit" form="patientForm" class="save-btn" id="saveBtn">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H16L21 8V19C21 20.1046 20.1046 21 19 21Z"
+                                stroke="currentColor" stroke-width="2" />
+                            <path d="M7 3V8H15V3" stroke="currentColor" stroke-width="2" />
+                            <path d="M7 13H17V21H7V13Z" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span>حفظ التحديثات</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>جاري تحليل البيانات بالذكاء الاصطناعي...</p>
+        </div>
+    </div>
+
+    <script type="module" src="js/patient-edit.js"></script>
+</body>
+
+</html>

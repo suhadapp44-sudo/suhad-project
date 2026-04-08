@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suhad - Hospital Management System</title>
+    <link rel="stylesheet" href="css/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="background-animation">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <div class="container">
+        <div class="login-card">
+            <div class="logo-section">
+                <div class="logo-circle">
+                    <img src="images/icon.svg" alt="Suhad Logo" style="width: 50px; height: 50px;">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="form-title">تسجيل الدخول</h2>
+                <p class="form-description">مرحباً بك في نظام سهاد لإدارة المرضى</p>
+
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="email">البريد الإلكتروني</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none">
+                                <path
+                                    d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z"
+                                    stroke="currentColor" stroke-width="2" />
+                                <path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" />
+                            </svg>
+                            <input type="email" id="email" name="email" placeholder="nurse@hospital.com" required
+                                autocomplete="email">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">كلمة المرور</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none">
+                                <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor"
+                                    stroke-width="2" />
+                                <path d="M7 11V7C7 4.79086 8.79086 3 11 3H13C15.2091 3 17 4.79086 17 7V11"
+                                    stroke="currentColor" stroke-width="2" />
+                            </svg>
+                            <input type="password" id="password" name="password" placeholder="••••••••" required
+                                autocomplete="current-password">
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
+                                        stroke="currentColor" stroke-width="2" />
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <label class="remember-me">
+                            <input type="checkbox" id="remember">
+                            <span>تذكرني</span>
+                        </label>
+                        <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
+                    </div>
+
+                    <button type="submit" class="login-button">
+                        <span class="button-text">تسجيل الدخول</span>
+                        <svg class="button-icon" viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                    </button>
+
+                    <div class="error-message" id="errorMessage"></div>
+                </form>
+            </div>
+
+            <div class="footer-note">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path
+                        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                        stroke="currentColor" stroke-width="2" />
+                    <path d="M12 8V12L14.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                <p>نظام آمن ومشفر لحماية بيانات المرضى</p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-content">
+                <h2 class="info-title">نظام سُهاد الطبي</h2>
+                <p class="info-description">
+                    نظام ذكي لإدارة المرضى وتحليل الحالات الطبية في العناية المركزة، مع ذكاء اصطناعي متقدم لتحليل الحالات وإشعارات فورية للعائلات
+                </p>
+
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" />
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <div class="feature-text">
+                            <h3>تحديثات فورية</h3>
+                            <p>مراقبة مباشرة لحالة المرضى</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2" />
+                                <path d="M4 20C4 20 6 16 12 16C18 16 20 20 20 20" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <div class="feature-text">
+                            <h3>ذكاء اصطناعي</h3>
+                            <p>تحليل ذكي للحالات الطبية</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path
+                                    d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                    stroke="currentColor" stroke-width="2" />
+                                <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <div class="feature-text">
+                            <h3>أمان متقدم</h3>
+                            <p>حماية كاملة لبيانات المرضى</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/login.js"></script>
+</body>
+
+</html>

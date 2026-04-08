@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>اختبار Patient Details</title>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            padding: 2rem;
+            background: #f7fafc;
+        }
+
+        .test-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #2d3748;
+        }
+
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 0.5rem 0;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔧 صفحة اختبار Patient Details</h1>
+
+    <div class="test-card">
+        <h2>١. فحص معرّف المريض</h2>
+        <p>معرّف المريض من URL: <code id="patientId">...</code></p>
+        <div id="idStatus"></div>
+    </div>
+
+    <div class="test-card">
+        <h2>٢. فحص Firebase Connection</h2>
+        <div id="firebaseStatus">جاري الفحص...</div>
+    </div>
+
+    <div class="test-card">
+        <h2>٣. فحص بيانات المريض</h2>
+        <div id="patientStatus">جاري التحميل...</div>
+    </div>
+
+    <div class="test-card">
+        <h2>٤. فحص Procedures</h2>
+        <div id="proceduresStatus">جاري التحميل...</div>
+        <button onclick="testAddProcedure()">اختبر إضافة إجراء</button>
+    </div>
+
+    <div class="test-card">
+        <h2>٥. فحص Medications</h2>
+        <div id="medicationsStatus">جاري التحميل...</div>
+        <button onclick="testAddMedication()">اختبر إضافة دواء</button>
+    </div>
+
+    <div class="test-card">
+        <h2>٦. فحص Lab Tests</h2>
+        <div id="labTestsStatus">جاري التحميل...</div>
+        <button onclick="testAddLabTest()">اختبر إضافة تحليل</button>
+    </div>
+
+    <div class="test-card">
+        <h2>٧. Console Log</h2>
+        <pre id="consoleLog">...</pre>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc, collection, addDoc, query, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJXl3lOaTuxTW9S1rE9jLtk4LvK-7kFBg",
+            authDomain: "suhad-80c82.firebaseapp.com",
+            projectId: "suhad-80c82",
+            storageBucket: "suhad-80c82.firebasestorage.app",
+            messagingSenderId: "527713675665",
+            appId: "1:527713675665:web:94c69d4777b0755363d230"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let logs = [];
+        function log(msg) {
+            logs.push(`[${new Date().toLocaleTimeString()}] ${msg}`);
+            document.getElementById('consoleLog').textContent = logs.join('\n');
+            console.log(msg);
+        }
+
+        // 1. Check Patient ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const patientId = urlParams.get('id');
+
+        document.getElementById('patientId').textContent = patientId || '❌ غير موجود!';
+
+        if (!patientId) {
+            document.getElementById('idStatus').innerHTML = `
+                <div class="status error">⚠️ لا يوجد معرّف مريض في URL!</div>
+                <p>أضف <code>?id=P12345</code> إلى نهاية الرابط</p>
+            `;
+            log('ERROR: No patient ID in URL');
+        } else {
+            document.getElementById('idStatus').innerHTML = `
+                <div class="status success">✅ المعرّف موجود!</div>
+            `;
+            log(`Patient ID found: ${patientId}`);
+        }
+
+        // 2. Check Firebase
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                document.getElementById('firebaseStatus').innerHTML = `
+                    <div class="status error">❌ غير مسجل دخول!</div>
+                    <p><a href="login.html">سجل دخول أولاً</a></p>
+                `;
+                log('ERROR: Not authenticated');
+                return;
+            }
+
+            document.getElementById('firebaseStatus').innerHTML = `
+                <div class="status success">✅ متصل - User: ${user.email}</div>
+            `;
+            log(`Authenticated as: ${user.email}`);
+
+            if (!patientId) return;
+
+            // 3. Check Patient Data
+            try {
+                const patientDoc = await getDoc(doc(db, 'patients', patientId));
+                if (patientDoc.exists()) {
+                    const data = patientDoc.data();
+                    document.getElementById('patientStatus').innerHTML = `
+                        <div class="status success">✅ المريض موجود!</div>
+                        <p>الاسم: <strong>${data.name}</strong></p>
+                        <p>الغرفة: <strong>${data.room}</strong></p>
+                    `;
+                    log(`Patient loaded: ${data.name}`);
+                } else {
+                    document.getElementById('patientStatus').innerHTML = `
+                        <div class="status error">❌ المريض غير موجود!</div>
+                    `;
+                    log(`ERROR: Patient ${patientId} not found`);
+                }
+            } catch (error) {
+                document.getElementById('patientStatus').innerHTML = `
+                    <div class="status error">❌ خطأ: ${error.message}</div>
+                `;
+                log(`ERROR loading patient: ${error.message}`);
+            }
+
+            // 4. Check Procedures
+            try {
+                const proceduresSnap = await getDocs(collection(db, 'patients', patientId, 'procedures'));
+                document.getElementById('proceduresStatus').innerHTML = `
+                    <div class="status ${proceduresSnap.empty ? 'info' : 'success'}">
+                        ${proceduresSnap.empty ? 'ℹ️' : '✅'} عدد الإجراءات: ${proceduresSnap.size}
+                    </div>
+                `;
+                log(`Procedures count: ${proceduresSnap.size}`);
+            } catch (error) {
+                document.getElementById('proceduresStatus').innerHTML = `
+                    <div class="status error">❌ خطأ: ${error.message}</div>
+                `;
+                log(`ERROR loading procedures: ${error.message}`);
+            }
+
+            // 5. Check Medications
+            try {
+                const medsSnap = await getDocs(collection(db, 'patients', patientId, 'medications'));
+                document.getElementById('medicationsStatus').innerHTML = `
+                    <div class="status ${medsSnap.empty ? 'info' : 'success'}">
+                        ${medsSnap.empty ? 'ℹ️' : '✅'} عدد الأدوية: ${medsSnap.size}
+                    </div>
+                `;
+                log(`Medications count: ${medsSnap.size}`);
+            } catch (error) {
+                document.getElementById('medicationsStatus').innerHTML = `
+                    <div class="status error">❌ خطأ: ${error.message}</div>
+                `;
+                log(`ERROR loading medications: ${error.message}`);
+            }
+
+            // 6. Check Lab Tests
+            try {
+                const labsSnap = await getDocs(collection(db, 'patients', patientId, 'labTests'));
+                document.getElementById('labTestsStatus').innerHTML = `
+                    <div class="status ${labsSnap.empty ? 'info' : 'success'}">
+                        ${labsSnap.empty ? 'ℹ️' : '✅'} عدد التحاليل: ${labsSnap.size}
+                    </div>
+                `;
+                log(`Lab tests count: ${labsSnap.size}`);
+            } catch (error) {
+                document.getElementById('labTestsStatus').innerHTML = `
+                    <div class="status error">❌ خطأ: ${error.message}</div>
+                `;
+                log(`ERROR loading lab tests: ${error.message}`);
+            }
+        });
+
+        // Test functions
+        window.testAddProcedure = async function () {
+            if (!patientId) {
+                alert('لا يوجد معرّف مريض!');
+                return;
+            }
+            try {
+                const docRef = await addDoc(collection(db, 'patients', patientId, 'procedures'), {
+                    name: 'Test X-Ray',
+                    status: 'Scheduled',
+                    note: 'Test procedure from debug page',
+                    timestamp: serverTimestamp(),
+                    orderedBy: 'Test User',
+                    createdAt: serverTimestamp()
+                });
+                alert('✅ تم إضافة إجراء تجريبي!');
+                log(`Procedure added: ${docRef.id}`);
+                location.reload();
+            } catch (error) {
+                alert('❌ خطأ: ' + error.message);
+                log(`ERROR adding procedure: ${error.message}`);
+            }
+        };
+
+        window.testAddMedication = async function () {
+            if (!patientId) {
+                alert('لا يوجد معرّف مريض!');
+                return;
+            }
+            try {
+                const docRef = await addDoc(collection(db, 'patients', patientId, 'medications'), {
+                    name: 'Test Aspirin',
+                    dose: '500mg',
+                    route: 'Oral',
+                    status: 'Given',
+                    timestamp: serverTimestamp(),
+                    givenBy: 'Test User',
+                    createdAt: serverTimestamp()
+                });
+                alert('✅ تم إضافة دواء تجريبي!');
+                log(`Medication added: ${docRef.id}`);
+                location.reload();
+            } catch (error) {
+                alert('❌ خطأ: ' + error.message);
+                log(`ERROR adding medication: ${error.message}`);
+            }
+        };
+
+        window.testAddLabTest = async function () {
+            if (!patientId) {
+                alert('لا يوجد معرّف مريض!');
+                return;
+            }
+            try {
+                const docRef = await addDoc(collection(db, 'patients', patientId, 'labTests'), {
+                    testName: 'Test CBC',
+                    status: 'Ordered',
+                    orderedAt: serverTimestamp(),
+                    orderedBy: 'Test User',
+                    createdAt: serverTimestamp()
+                });
+                alert('✅ تم إضافة تحليل تجريبي!');
+                log(`Lab test added: ${docRef.id}`);
+                location.reload();
+            } catch (error) {
+                alert('❌ خطأ: ' + error.message);
+                log(`ERROR adding lab test: ${error.message}`);
+            }
+        };
+    </script>
+</body>
+
+</html>
